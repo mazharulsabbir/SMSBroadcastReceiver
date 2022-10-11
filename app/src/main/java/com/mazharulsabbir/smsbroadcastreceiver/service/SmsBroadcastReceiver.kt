@@ -19,9 +19,9 @@ class SmsBroadcastReceiver : BroadcastReceiver() {
                 Log.i(TAG, "Body: ${smsMessage.displayMessageBody}")
 
                 val serviceIntent = Intent(context, SmsUploadService::class.java)
-                serviceIntent.extras?.let {
-                    it.putString("originatingAddress", smsMessage.originatingAddress)
-                    it.putString("displayMessageBody", smsMessage.displayMessageBody)
+                serviceIntent.let {
+                    it.putExtra("address", smsMessage.originatingAddress)
+                    it.putExtra("body", smsMessage.displayMessageBody)
                 }
                 context?.startForegroundService(serviceIntent)
             }
