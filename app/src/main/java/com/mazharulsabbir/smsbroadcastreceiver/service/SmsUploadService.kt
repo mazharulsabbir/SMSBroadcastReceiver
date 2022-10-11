@@ -109,5 +109,6 @@ class SmsUploadService : Service() {
         private const val TAG = "SmsUploadService"
         private const val CHANNEL_ID = "SmsUploadServiceChannel_001"
         private const val NOTIFICATION_ID = 127
+        // https://www.tutlane.com/tutorial/android/android-progress-notification-with-examples
     }
 }
