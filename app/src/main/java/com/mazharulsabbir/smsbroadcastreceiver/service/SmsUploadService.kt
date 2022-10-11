@@ -29,7 +29,7 @@ class SmsUploadService : Service() {
             channel = NotificationChannel(
                 CHANNEL_ID,
                 "Notification from SMS Receiver",
-                NotificationManager.IMPORTANCE_DEFAULT
+                NotificationManager.IMPORTANCE_MAX
             )
             (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
                 channel
@@ -40,7 +40,6 @@ class SmsUploadService : Service() {
                 .build()
             startForeground(NOTIFICATION_ID, notification)
         }
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -90,6 +89,9 @@ class SmsUploadService : Service() {
             } else {
                 Log.e(TAG, responseCode.toString())
             }
+
+            /*stop the service running foreground.*/
+            stopSelf()
         }
     }
 
