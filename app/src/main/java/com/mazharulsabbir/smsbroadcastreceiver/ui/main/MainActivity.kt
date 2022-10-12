@@ -1,6 +1,9 @@
 package com.mazharulsabbir.smsbroadcastreceiver.ui.main
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -16,6 +19,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.snackbar.Snackbar
 import com.mazharulsabbir.smsbroadcastreceiver.R
 import com.mazharulsabbir.smsbroadcastreceiver.databinding.ActivityMainBinding
+import com.mazharulsabbir.smsbroadcastreceiver.service.SmsUploadService
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+        createNotificationChannel()
 
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
@@ -45,7 +50,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkForPermission() {
-        val isSmsReadPermissionAvailable = ContextCompat.checkSelfPermission(this, android.Manifest.permission.RECEIVE_SMS) == PackageManager.PERMISSION_GRANTED
+        val isSmsReadPermissionAvailable = ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.RECEIVE_SMS
+        ) == PackageManager.PERMISSION_GRANTED
         if (!isSmsReadPermissionAvailable) {
             readSmsPermissionIntent.launch(android.Manifest.permission.RECEIVE_SMS)
         }
@@ -56,6 +64,18 @@ class MainActivity : AppCompatActivity() {
     ) { granted ->
         if (granted) {
             Log.i(TAG, "Permission Granted: SMS_READ")
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                SmsUploadService.CHANNEL_ID,
+                "Notification from SMS Receiver",
+                NotificationManager.IMPORTANCE_MAX
+            )
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
+                .createNotificationChannel(channel)
         }
     }
 
